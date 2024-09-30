@@ -1,0 +1,245 @@
+---
+title: "Tidy Tuesday 2"
+format: html
+editor: visual
+---
+
+```{r}
+library(readr)
+library(tidyverse)
+library(gridExtra)
+country_results_df <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2024/2024-09-24/country_results_df.csv')
+
+individual_results_df <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2024/2024-09-24/individual_results_df.csv')
+
+timeline_df <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2024/2024-09-24/timeline_df.csv')
+
+```
+```{r}
+country_results_df <- country_results_df %>%
+  select(!p7) %>%
+  mutate(totalscore = p1 + p2 + p3 + p4 + p5 + p6)
+```
+```{r}
+p1 <- country_results_df %>%
+  na.omit() %>%
+  group_by(year) %>%
+  summarize(meanp1 = mean(p1))
+
+p1 <- p1 %>%
+  mutate(propp1 = meanp1 / 42)
+
+p1
+```
+```{r}
+p2 <- country_results_df %>%
+  na.omit() %>%
+  group_by(year) %>%
+  summarize(meanp2 = mean(p2))
+
+p2 <- p2 %>%
+  mutate(propp2 = meanp2 / 42)
+
+p2
+```
+```{r}
+p3 <- country_results_df %>%
+  na.omit() %>%
+  group_by(year) %>%
+  summarize(meanp3 = mean(p3))
+
+p3 <- p3 %>%
+  mutate(propp3 = meanp3 / 42)
+
+p3
+```
+```{r}
+p4 <- country_results_df %>%
+  na.omit() %>%
+  group_by(year) %>%
+  summarize(meanp4 = mean(p4))
+
+p4 <- p4 %>%
+  mutate(propp4 = meanp4 / 42)
+
+p4
+```
+```{r}
+p5 <- country_results_df %>%
+  na.omit() %>%
+  group_by(year) %>%
+  summarize(meanp5 = mean(p5))
+
+p5 <- p5 %>%
+  mutate(propp5 = meanp5 / 42)
+
+p5
+```
+```{r}
+p6 <- country_results_df %>%
+  na.omit() %>%
+  group_by(year) %>%
+  summarize(meanp6 = mean(p6))
+
+p6 <- p6 %>%
+  mutate(propp6 = meanp6 / 42)
+
+p6
+```
+```{r}
+p12 <- individual_results_df %>%
+  group_by(year) %>%
+  summarize(meanp1 = mean(p1))
+
+p12 <- p12 %>%
+  filter(meanp1 < 7) %>%
+  mutate(propp1 = meanp1 / 7) %>%
+  filter(year > 1988)
+
+p22 <- individual_results_df %>%
+  group_by(year) %>%
+  summarize(meanp2 = mean(p2))
+
+p22 <- p22 %>%
+  filter(meanp2 < 7) %>%
+  mutate(propp2 = meanp2 / 7) %>%
+  filter(year > 1988)
+
+p32 <- individual_results_df %>%
+  group_by(year) %>%
+  summarize(meanp3 = mean(p3))
+
+p32 <- p32 %>%
+  filter(meanp3 < 7) %>%
+  mutate(propp3 = meanp3 / 7) %>%
+  filter(year > 1988)
+
+
+p42 <- individual_results_df %>%
+  group_by(year) %>%
+  summarize(meanp4 = mean(p4))
+
+p42 <- p42 %>%
+  filter(meanp4 < 7) %>%
+  mutate(propp4 = meanp4 / 7) %>%
+  filter(year > 1988)
+
+
+p52 <- individual_results_df %>%
+  group_by(year) %>%
+  summarize(meanp5 = mean(p5))
+
+p52 <- p52 %>%
+  filter(meanp5 < 7) %>%
+  mutate(propp5 = meanp5 / 7) %>%
+  filter(year > 1988)
+
+
+p62 <- individual_results_df %>%
+  group_by(year) %>%
+  summarize(meanp6 = mean(p6))
+
+p62 <- p62 %>%
+  filter(meanp6 < 7) %>%
+  mutate(propp6 = meanp6 / 7) %>%
+  filter(year > 1988)
+
+```
+
+
+
+
+
+```{r}
+plot_1 <- ggplot() +
+  geom_line(data = p1, aes(x = year, y = propp1, color = 'Team Data')) +
+  geom_line(data = p12, aes(x = year, y = propp1, color = 'Individual Data')) +
+  scale_color_manual(values = c("Team Data" = 'red', 'Individual Data' = 'blue'), name = 'Data Type') +
+  labs(title = "P1", y = "Proportional Score") +
+  theme_minimal()
+
+plot_1
+```
+```{r}
+plot_2 <- ggplot() +
+  geom_line(data = p2, aes(x = year, y = propp2, color = 'Team Data')) +
+  geom_line(data = p22, aes(x = year, y = propp2, color = 'Individual Data')) +
+  scale_color_manual(values = c("Team Data" = 'red', 'Individual Data' = 'blue'), name = 'Data Type') +
+  labs(title = "P2", y = "Proportional Score") +
+  theme_minimal()
+
+plot_2
+```
+```{r}
+plot_3 <- ggplot() +
+  geom_line(data = p3, aes(x = year, y = propp3, color = 'Team Data')) +
+  geom_line(data = p32, aes(x = year, y = propp3, color = 'Individual Data')) +
+  scale_color_manual(values = c("Team Data" = 'red', 'Individual Data' = 'blue'), name = 'Data Type') +
+  labs(title = "P3", y = "Proportional Score") +
+  theme_minimal()
+
+plot_3
+```
+```{r}
+plot_4 <- ggplot() +
+  geom_line(data = p4, aes(x = year, y = propp4, color = 'Team Data')) +
+  geom_line(data = p42, aes(x = year, y = propp4, color = 'Individual Data')) +
+  scale_color_manual(values = c("Team Data" = 'red', 'Individual Data' = 'blue'), name = 'Data Type') +
+  labs(title = "P4", y = "Proportional Score") +
+  theme_minimal()
+
+plot_4
+```
+```{r}
+plot_5 <- ggplot() +
+  geom_line(data = p5, aes(x = year, y = propp5, color = 'Team Data')) +
+  geom_line(data = p52, aes(x = year, y = propp5, color = 'Individual Data')) +
+  scale_color_manual(values = c("Team Data" = 'red', 'Individual Data' = 'blue'), name = 'Data Type') +
+  labs(title = "P5", y = "Proportional Score") +
+  theme_minimal()
+
+plot_5
+```
+```{r}
+plot_6 <- ggplot() +
+  geom_line(data = p6, aes(x = year, y = propp6, color = 'Team Data')) +
+  geom_line(data = p62, aes(x = year, y = propp6, color = 'Individual Data')) +
+  scale_color_manual(values = c("Team Data" = 'red', 'Individual Data' = 'blue'), name = 'Data Type') +
+  labs(title = "P6", y = "Proportional Score") +
+  theme_minimal()
+
+plot_6
+```
+```{r}
+plot_7 <- ggplot() +
+  geom_line(data = p1, aes(x = year, y = meanp1, color = 'p1'), linetype = 1) +
+  geom_line(data = p2, aes(x = year, y = meanp2, color = 'p2'), linetype = 2) +
+  geom_line(data = p3, aes(x = year, y = meanp3, color = 'p3'), linetype = 3) +
+  scale_color_manual(values = c("p1" = 'red', 'p2' = 'blue', 'p3' = 'darkgreen'), name = 'Problem') +
+  labs(title = "p1-p3 Avg Scores", y = "Average Score")
+  theme_minimal()
+  
+  plot_7
+```
+```{r}
+plot_8 <- ggplot() +
+  geom_line(data = p4, aes(x = year, y = meanp4, color = 'p4'), linetype = 2) +
+  geom_line(data = p5, aes(x = year, y = meanp5, color = 'p5'), linetype = 5) +
+  geom_line(data = p6, aes(x = year, y = meanp6, color = 'p6'), linetype = 6) +
+  scale_color_manual(values = c("p4" = 'black', 'p5' = 'purple', 'p6' = 'orange'), name = 'Problem') +
+  labs(title = "p4-p6 Avg Scores", y = "Average Score")
+
+plot_8
+```
+
+
+
+
+
+```{r}
+plot_9 <- grid.arrange(plot_1, plot_2, plot_3, plot_4, plot_5, plot_6, plot_7, plot_8,nrow = 4)
+plot_9
+
+ggsave("tidytuesday2plot.png", plot = plot_9, width = 10, height = 10)
+```
+
