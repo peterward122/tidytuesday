@@ -1,0 +1,157 @@
+---
+title: "Tidy Tuesday"
+format: html
+editor: visual
+---
+
+```{r}
+library(readr)
+library(tidyverse)
+chess <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2024/2024-10-01/chess.csv')
+
+```
+```{r}
+chess %>%
+  filter(winner != 'draw') %>%
+  group_by(winner) %>%
+  count()
+
+max(chess$white_rating)
+min(chess$white_rating)
+max(chess$black_rating)
+min(chess$black_rating)
+```
+
+```{r}
+chess <- chess %>%
+  mutate(winnerRating = ifelse(winner == 'black',black_rating, white_rating)) %>%
+  mutate(winnerRatingCat = cut(winnerRating, breaks = c(700,1000,1500,1900,2300,3000), labels = c("novice","amateur","semi-pro","pro","expert")))
+```
+
+
+```{r}
+novicemoves <- chess %>%
+  filter(winnerRatingCat == 'novice') %>%
+  group_by(winnerRatingCat) %>%
+  count(opening_ply)
+
+plot1 <- novicemoves %>%
+  ggplot() +
+  geom_col(aes(x = opening_ply, y= n, fill = opening_ply)) +
+  scale_fill_gradient(low = 'gold', high = 'red') +
+  labs(title = 'Novice Winners', y = "Total", x = "Number of Opening Moves") +
+  guides(fill = "none") +
+  theme_minimal()
+
+plot1
+  
+novicemoves %>%
+  ggplot() +
+  geom_density(aes(x = opening_ply))
+```
+```{r}
+amateurmoves <- chess %>%
+  filter(winnerRatingCat == 'amateur') %>%
+  group_by(winnerRatingCat) %>%
+  count(opening_ply)
+
+plot2 <- amateurmoves %>%
+  ggplot() +
+  geom_col(aes(x = opening_ply, y = n, fill = opening_ply)) +
+  scale_fill_gradient(low = 'gold', high = 'red') +
+  labs(title = 'Amateur Winners', x = "Number of Opening Moves", y = "Total") +
+  guides(fill = "none") +
+  theme_minimal()
+
+plot2
+
+amateurmoves %>%
+  ggplot() +
+  geom_density(aes(x = opening_ply))
+
+```
+```{r}
+semipromoves <- chess %>%
+  filter(winnerRatingCat == 'semi-pro') %>%
+  group_by(winnerRatingCat) %>%
+  count(opening_ply)
+
+plot3 <- semipromoves %>%
+  ggplot() +
+  geom_col(aes(x = opening_ply, y = n, fill = opening_ply)) +
+  scale_fill_gradient(low = 'gold', high = 'red') +
+  labs(title = 'Semi-Pro Winners', x = "Number of Opening Moves", y = "Total") +
+  guides(fill = "none") +
+  theme_minimal()
+
+plot3
+
+semipromoves %>%
+  ggplot() +
+  geom_density(aes(x = opening_ply))
+```
+```{r}
+promoves <- chess %>%
+  filter(winnerRatingCat == 'pro') %>%
+  group_by(winnerRatingCat) %>%
+  count(opening_ply)
+
+plot4 <- promoves %>%
+  ggplot() +
+  geom_col(aes(x = opening_ply, y = n, fill = opening_ply)) +
+  scale_fill_gradient(low = 'gold', high = 'red') +
+  labs(title = 'Pro Winners', x = "Number of Opening Moves", y = "Total") +
+  guides(fill = "none") +
+  theme_minimal()
+
+plot4
+
+promoves %>%
+  ggplot() +
+  geom_density(aes(x = opening_ply))
+```
+
+```{r}
+expertmoves <- chess %>%
+  filter(winnerRatingCat == 'expert') %>%
+  group_by(winnerRatingCat) %>%
+  count(opening_ply)
+
+plot5 <- expertmoves %>%
+  ggplot() +
+  geom_col(aes(x = opening_ply, y = n, fill = opening_ply)) +
+  scale_fill_gradient(low = 'gold', high = 'red') +
+  labs(title = 'Expert Winners', y = "Total", x = "Number of Opening Moves") +
+  guides(fill = "none") +
+  theme_minimal()
+
+plot5
+
+expertmoves %>%
+  ggplot() +
+  geom_density(aes(x = opening_ply))
+```
+```{r}
+chess2 <- chess %>%
+  group_by(winnerRatingCat) %>%
+  summarize(meanMoves = mean(opening_ply))
+
+plot6 <- chess2 %>%
+  ggplot() +
+  geom_col(aes(x = winnerRatingCat, y = meanMoves, fill = winnerRatingCat)) +
+  labs(y = "Mean Moves", x = "Skill Level") +
+  guides(fill = "none") +
+  theme(axis.text.x = element_text(angle = 90))
+  theme_minimal()
+
+plot6
+```
+
+
+
+```{r}
+library(gridExtra)
+plot7 <- grid.arrange(plot1, plot2, plot3, plot4, plot5, plot6, nrow = 3)
+plot7
+```
+
