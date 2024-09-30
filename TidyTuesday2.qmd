@@ -10,6 +10,7 @@ library(tidyverse)
 chess <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2024/2024-10-01/chess.csv')
 
 ```
+
 ```{r}
 chess %>%
   filter(winner != 'draw') %>%
@@ -27,7 +28,6 @@ chess <- chess %>%
   mutate(winnerRating = ifelse(winner == 'black',black_rating, white_rating)) %>%
   mutate(winnerRatingCat = cut(winnerRating, breaks = c(700,1000,1500,1900,2300,3000), labels = c("novice","amateur","semi-pro","pro","expert")))
 ```
-
 
 ```{r}
 novicemoves <- chess %>%
@@ -49,6 +49,7 @@ novicemoves %>%
   ggplot() +
   geom_density(aes(x = opening_ply))
 ```
+
 ```{r}
 amateurmoves <- chess %>%
   filter(winnerRatingCat == 'amateur') %>%
@@ -70,6 +71,7 @@ amateurmoves %>%
   geom_density(aes(x = opening_ply))
 
 ```
+
 ```{r}
 semipromoves <- chess %>%
   filter(winnerRatingCat == 'semi-pro') %>%
@@ -90,6 +92,7 @@ semipromoves %>%
   ggplot() +
   geom_density(aes(x = opening_ply))
 ```
+
 ```{r}
 promoves <- chess %>%
   filter(winnerRatingCat == 'pro') %>%
@@ -131,6 +134,7 @@ expertmoves %>%
   ggplot() +
   geom_density(aes(x = opening_ply))
 ```
+
 ```{r}
 chess2 <- chess %>%
   group_by(winnerRatingCat) %>%
@@ -147,11 +151,10 @@ plot6 <- chess2 %>%
 plot6
 ```
 
-
-
 ```{r}
 library(gridExtra)
 plot7 <- grid.arrange(plot1, plot2, plot3, plot4, plot5, plot6, nrow = 3)
 plot7
-```
 
+ggsave("tidytuesdayplot.png", plot = plot7, width = 10, height = 10)
+```
