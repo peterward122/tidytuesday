@@ -14,6 +14,8 @@ olympics <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/t
 olympics3 <- olympics %>%
   filter(sport == "Basketball") %>%
   filter(medal == "Gold") %>%
+  filter(sex == "M") %>%
+  filter(year > 1957) %>%
   na.omit() %>%
   group_by(year)
 
@@ -67,21 +69,6 @@ olympics4 %>%
 ```
 
 ```{r}
-olympics5 <- olympics %>%
-  filter(sport == 'Basketball') %>%
-  na.omit %>%
-  group_by(medal, year) %>%
-  mutate(meanHeight = mean(height))
-
- olympics5 %>%
-  ggplot(aes(x = year, y = meanHeight, color = medal, shape = medal)) +
-  geom_point() +
-  geom_line(size = 1) +
-  labs(title = "Distribution of Average Heights of Olympic Teams Over Time by Medal")
-  
-```
-
-```{r}
 olympics6 <- olympics4 %>%
   group_by(year,sex) %>%
   mutate(mHeight = mean(height)) %>%
@@ -103,3 +90,99 @@ olympics4 %>%
   labs(x = 'Height Distribution', y = 'Frequency', title = 'Distribution of Heights of Olympic Champion Basketball \n Rosters Over Time') +
   theme_minimal()
 ```
+```{r}
+olympics4 %>%
+  ggplot(aes(x = height, fill = year)) +
+  geom_density() +
+  facet_wrap(year~.) +
+  labs(x = 'Height Distribution', y = 'Frequency', title = 'Distribution of Heights of Olympic Champion Basketball \n Rosters Over Time') +
+  theme_minimal() +
+ geom_vline(aes(xintercept = avgheight))+
+scale_fill_manual(values=c("green","orange","blue","black", "red4", "orangered","cyan","darkviolet","darksalmon","darkorange","cornsilk","darkgoldenrod1","deeppink","burlywood1","blue4","darkgreen","darkslategray3","deepskyblue", "grey"))
+```
+```{r}
+plot.1 <- olympics4 %>%
+  ggplot() +
+  geom_violin(aes(x = year, y = height)) +
+  geom_point(aes(x = year, y = avgheight)) +
+  labs(x = 'Year', y = 'Height Distribution', title = "Gold Medal Men's Basketball Teams", caption = 'Points represent mean height in a given year') +
+  theme_minimal()
+
+plot.1
+```
+```{r}
+olympics7 <- olympics %>%
+  filter(sport == "Basketball") %>%
+  filter(medal == "Silver") %>%
+  filter(sex == "M") %>%
+  filter(year > 1957) %>%
+  na.omit() %>%
+  group_by(year)
+
+olympics7 <- olympics7 %>%
+  mutate(avgheight = mean(height)) %>%
+  mutate(year = as.factor(year))
+```
+
+```{r}
+olympics8 <- olympics %>%
+  filter(sport == "Basketball") %>%
+  filter(medal == "Bronze") %>%
+  filter(sex == 'M') %>%
+  filter(year > 1957) %>%
+  na.omit() %>%
+  group_by(year)
+
+olympics8 <- olympics8 %>%
+  mutate(avgheight = mean(height)) %>%
+  mutate(year = as.factor(year))
+```
+
+```{r}
+plot.2 <- olympics7 %>%
+  ggplot() +
+  geom_violin(aes(x = year, y = height)) +
+  geom_point(aes(x = year, y = avgheight)) +
+  labs(x = 'Year', y = 'Height Distribution', title = "Silver Medal Men's Basketball Teams", caption = 'Points represent mean height in a given year') +
+  theme_minimal()
+
+plot.2
+```
+```{r}
+plot.3 <- olympics8 %>%
+  ggplot() +
+  geom_violin(aes(x = year, y = height)) +
+  geom_point(aes(x = year, y = avgheight)) +
+  labs(x = 'Year', y = 'Height Distribution', title = "Bronze Medal Mens' Basketball Teams", caption = 'Points represent mean height in a given year') +
+  theme_minimal()
+
+plot.3
+```
+
+```{r}
+olympics5 <- olympics %>%
+  filter(sport == 'Basketball') %>%
+  filter(year > 1957) %>%
+  na.omit %>%
+  group_by(medal, year) %>%
+  mutate(meanHeight = mean(height))
+
+plot.4 <- olympics5 %>%
+  ggplot(aes(x = year, y = meanHeight, color = medal, shape = medal)) +
+  geom_point() +
+  geom_line(size = 1) +
+  labs(title = "Distribution of Average Heights of Olympic Teams Over Time by Medal")
+
+plot.4
+```
+
+```{r}
+library(gridExtra)
+plot.5 <- grid.arrange(plot.1, plot.2, plot.3,plot.4, nrow = 4)
+
+plot.5
+
+ggsave("tidytuesday3plot.png", plot = plot.5, width = 10, height = 10)
+```
+
+
